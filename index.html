@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>小暖AI · 你的可爱伙伴</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      /* 暖色调乳白底色，微微渐变增加柔和感 */
+      background: linear-gradient(145deg, #fff9ef 0%, #ffe9d6 100%);
+      font-family: 'Segoe UI', 'Quicksand', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    /* 可爱的小装饰：漂浮的云朵和小点 */
+    .deco {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .deco-1 {
+      top: 5%;
+      left: 3%;
+      width: 80px;
+      opacity: 0.4;
+    }
+    .deco-2 {
+      bottom: 8%;
+      right: 4%;
+      width: 100px;
+      opacity: 0.35;
+    }
+    .deco-3 {
+      top: 20%;
+      right: 8%;
+      width: 60px;
+      opacity: 0.3;
+    }
+    @media (max-width: 640px) {
+      .deco { display: none; }
+    }
+
+    /* 主卡片 —— 圆润可爱 */
+    .card {
+      max-width: 620px;
+      width: 100%;
+      background-color: #fffef7;
+      border-radius: 56px;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08), 0 8px 18px rgba(0, 0, 0, 0.03);
+      padding: 2.5rem 2rem 2.8rem;
+      text-align: center;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(0px);
+      border: 1px solid rgba(255, 245, 225, 0.8);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 可爱头像或标识 */
+    .avatar {
+      display: inline-flex;
+      background: #feecd9;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      box-shadow: 0 6px 12px rgba(248, 182, 98, 0.12);
+    }
+    .avatar span {
+      font-size: 3.6rem;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 600;
+      color: #c97e5a;
+      letter-spacing: -0.3px;
+      margin-bottom: 0.6rem;
+      background: linear-gradient(135deg, #e2a276, #c87e56);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .sub {
+      font-size: 1rem;
+      color: #b68b6f;
+      background: #fff2e6;
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      margin-bottom: 1.8rem;
+      font-weight: 500;
+      backdrop-filter: blur(2px);
+    }
+
+    .feature-badge {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .feature {
+      background: #fef5ea;
+      padding: 8px 20px;
+      border-radius: 60px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #da926b;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      transition: all 0.2s;
+    }
+    .feature:hover {
+      background: #ffe1c4;
+      transform: translateY(-2px);
+    }
+
+    .info-tip {
+      background: #fef2e4;
+      border-radius: 36px;
+      padding: 1rem 1.4rem;
+      font-size: 0.85rem;
+      color: #b07653;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 0.8rem;
+      border: 1px solid #ffe1cb;
+    }
+    .info-tip span {
+      font-size: 1.2rem;
+    }
+
+    /* 自定义控制按钮 (圆润可爱风格) */
+    .custom-buttons {
+      position: fixed;
+      bottom: 28px;
+      right: 24px;
+      display: flex;
+      gap: 12px;
+      z-index: 1001;
+    }
+    .custom-btn {
+      background: #ffffffdd;
+      backdrop-filter: blur(8px);
+      border: 1px solid #ffdec2;
+      padding: 10px 20px;
+      border-radius: 80px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      color: #c67b53;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+      font-family: inherit;
+    }
+    .custom-btn:first-child {
+      background: #ffddbb;
+      color: #b05e36;
+      border-color: #fccd9e;
+    }
+    .custom-btn:hover {
+      transform: translateY(-3px);
+      background: #ffe5cf;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    }
+    .custom-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* 调整 Coze 悬浮球原样式（覆盖一些内置样式，让它更协调） */
+    :root {
+      --coze-primary-color: #f3bc8c !important;
+      --coze-primary-hover: #e7a169 !important;
+    }
+    /* 可选: 让悬浮球也变成暖色圆润风格 (部分自定义样式尽力适配) */
+    iframe#coze-chat-bubble, .coze-chat-bubble {
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05));
+    }
+
+    @media (max-width: 560px) {
+      .card {
+        padding: 1.8rem 1.2rem;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      .custom-buttons {
+        bottom: 16px;
+        right: 16px;
+        gap: 8px;
+      }
+      .custom-btn {
+        padding: 8px 16px;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 可爱的小装饰 (SVG风格纯文本) -->
+<div class="deco deco-1">
+  <svg width="80" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="20" cy="20" r="12" fill="#FFDFB5" fill-opacity="0.6"/>
+    <circle cx="60" cy="12" r="18" fill="#FFD7A5" fill-opacity="0.5"/>
+    <circle cx="85" cy="30" r="10" fill="#FFE1BD" fill-opacity="0.5"/>
+  </svg>
+</div>
+<div class="deco deco-2">
+  <svg width="90" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M30,40 Q45,20 65,35 Q80,45 70,60 Q55,78 35,65 Q18,55 30,40Z" fill="#FFE2C1" fill-opacity="0.5"/>
+    <circle cx="48" cy="45" r="5" fill="#FFCFA2" fill-opacity="0.6"/>
+  </svg>
+</div>
+<div class="deco deco-3">
+  <svg width="60" viewBox="0 0 80 50" fill="none">
+    <circle cx="15" cy="25" r="8" fill="#FFDDB8" fill-opacity="0.5"/>
+    <circle cx="55" cy="18" r="12" fill="#FFD9AF" fill-opacity="0.5"/>
+  </svg>
+</div>
+
+<div class="card">
+  <div class="avatar">
+    <span>🐻‍❄️</span>
+  </div>
+  <h1>小暖AI伙伴</h1>
+  <div class="sub">· 温柔守护你的每一天 ·</div>
+
+  <div class="feature-badge">
+    <span class="feature">💬 随时聊天</span>
+    <span class="feature">🍃 治愈陪伴</span>
+    <span class="feature">✨ 灵感助手</span>
+  </div>
+
+  <div class="info-tip">
+    <span>🌸</span> 轻点右下角「小贝壳」悬浮球，就可以跟我说话啦～
+    <span>☁️</span>
+  </div>
+  <div style="margin-top: 18px; font-size: 0.7rem; color: #e1b48b;">
+    ⭐ 记住我，随时为你解答烦恼
+  </div>
+</div>
+
+<div class="custom-buttons">
+  <button class="custom-btn" id="showChatBtn">💌 打开助手</button>
+  <button class="custom-btn" id="hideChatBtn" style="background:#f7e9dd;">🌸 收起窗口</button>
+</div>
+
+<!-- Coze Chat SDK 加载 -->
+<script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.1.0-beta.0/libs/cn/index.js"></script>
+
+<script>
+    // ================= 请在这里填入你的智能体信息 =================
+    // 1. Bot ID (智能体ID)
+    const BOT_ID = '7638080550326714402';        // ⚠️ 替换为你的 Bot ID
+    // 2. 个人访问令牌 (PAT)
+    const ACCESS_TOKEN = 'pat_NvobauuQkojakJqlEbBNXnBFfmUwmV6FPiDCLK4H7dhvFRqoMZo3rrD1m7oCmU5y';   // ⚠️ 替换为你的 Access Token
+
+    // 调试提醒 (仅控制台)
+    if (BOT_ID === 'YOUR_BOT_ID_HERE') console.warn('👀 检测到未替换 Bot ID，请修改代码中的 BOT_ID');
+    if (ACCESS_TOKEN === 'YOUR_TOKEN_HERE') console.warn('👀 检测到未替换 Access Token，请修改代码中的 ACCESS_TOKEN');
+    
+    let cozeWebSDK = null;
+
+    try {
+        // 新版SDK所需参数，包含 onRefreshToken 回调（修复错误）
+        cozeWebSDK = new CozeWebSDK.WebChatClient({
+            config: {
+                bot_id: BOT_ID,               // 关键字段: bot_id (下划线格式)
+            },
+            auth: {
+                type: 'token',
+                token: ACCESS_TOKEN,
+                // 必须提供 onRefreshToken 方法，测试环境简单返回原有 token
+                onRefreshToken: async () => {
+                    console.log('🔄 Coze token 刷新请求 (开发环境直接返回原token)');
+                    return ACCESS_TOKEN;
+                }
+            },
+            ui: {
+                asstBtn: {
+                    isNeed: true,             // 显示悬浮球（右下角小图标，已暖色默认）
+                },
+                chatBot: {
+                    title: '小暖AI · 可爱伙伴',
+                    width: 400,
+                },
+                footer: {
+                    isShow: false,            // 隐藏官方底部水印，更干净
+                }
+            },
+            componentProps: {
+                lang: 'zh-CN',
+                layout: 'pc',
+            }
+        });
+        console.log('✅ Coze SDK 初始化完毕，小暖AI等待你的召唤～');
+    } catch (err) {
+        console.error('❌ Coze 初始化出错: ', err);
+    }
+
+    // 自定义开关按钮交互
+    const showBtn = document.getElementById('showChatBtn');
+    const hideBtn = document.getElementById('hideChatBtn');
+    if (showBtn && hideBtn && cozeWebSDK) {
+        showBtn.addEventListener('click', () => {
+            if (cozeWebSDK && typeof cozeWebSDK.showChatBot === 'function') {
+                cozeWebSDK.showChatBot();
+                console.log('💖 打开会话窗口');
+            } else {
+                console.warn('SDK未就绪，无法打开');
+            }
+        });
+        hideBtn.addEventListener('click', () => {
+            if (cozeWebSDK && typeof cozeWebSDK.hideChatBot === 'function') {
+                cozeWebSDK.hideChatBot();
+                console.log('🌸 收起会话窗口');
+            }
+        });
+    } else {
+        console.warn('按钮绑定失败或SDK未初始化');
+    }
+
+    // 页面关闭前可选销毁实例，保持优雅 (非必须)
+    window.addEventListener('beforeunload', () => {
+        if (cozeWebSDK && typeof cozeWebSDK.destroy === 'function') {
+            cozeWebSDK.destroy();
+        }
+    });
+</script>
+</body>
+</html>
+```
